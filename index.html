@@ -313,7 +313,7 @@ body {
 .share-preview { width: 100%; border-radius: 10px; display: block; margin-bottom: 14px; }
 .share-btns { display: flex; gap: 10px; }
 .btn-dl { flex: 1; padding: 13px; background: linear-gradient(135deg, var(--gold), var(--gold2)); border: none; border-radius: 10px; color: var(--deep); font-family: 'Noto Serif TC', serif; font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: 1.5px; }
-.btn-close-share { padding: 13px; background: transparent; border: 1px solid rgba(74,140,122,0.4); border-radius: 10px; color: var(--jade2); font-family: 'Noto Serif TC', serif; font-size: 13px; cursor: pointer; letter-spacing: 1.5px; }
+.btn-close-share { flex: 1; padding: 13px; background: transparent; border: 1px solid rgba(74,140,122,0.4); border-radius: 10px; color: var(--jade2); font-family: 'Noto Serif TC', serif; font-size: 13px; cursor: pointer; letter-spacing: 1.5px; }
 
 input[type="file"] { display: none; }
 </style>
@@ -458,12 +458,6 @@ input[type="file"] { display: none; }
   <div class="content">
     <div id="report-content"></div>
 
-    <a href="https://line.me/ti/p/ZC-w2BuPoi" target="_blank" style="display:block;text-decoration:none;margin-bottom:10px;">
-      <div style="width:100%;padding:14px;background:rgba(6,199,85,0.12);border:1px solid rgba(6,199,85,0.35);border-radius:12px;text-align:center;font-family:'Noto Serif TC',serif;font-size:13px;color:#06C755;letter-spacing:2px;transition:all 0.3s;">
-        💬 想改善？聯絡我
-      </div>
-    </a>
-
     <div class="action-row">
       <button class="btn-share" onclick="shareReport()">📸 分享報告</button>
       <button class="btn-restart" onclick="restartDiagnosis()">🔄 重新診斷</button>
@@ -489,17 +483,14 @@ input[type="file"] { display: none; }
 </div>
 
 <!-- Share Overlay -->
-<div class="share-overlay" id="share-overlay" onclick="closeShare()">
-  <div class="share-box" onclick="event.stopPropagation()">
+<div class="share-overlay" id="share-overlay">
+  <div class="share-box">
     <div class="share-box-title">📸 分享養生報告</div>
-    <div style="position:relative;">
-      <img id="share-preview-img" class="share-preview" src="" alt="report" style="border-radius:10px;width:100%;display:block;">
-      <div style="position:absolute;inset:0;border-radius:10px;background:transparent;"></div>
+    <img id="share-preview-img" class="share-preview" src="" alt="report">
+    <div class="share-btns">
+      <button class="btn-dl" onclick="downloadShareImg()">💾 儲存圖片</button>
+      <button class="btn-close-share" onclick="closeShare()">關閉</button>
     </div>
-    <div style="text-align:center;margin:10px 0 4px;font-size:12px;color:rgba(201,168,76,0.8);letter-spacing:2px;">
-      👆 長按圖片可以儲存
-    </div>
-    <button class="btn-close-share" style="width:100%;margin-top:6px;" onclick="closeShare()">關閉</button>
   </div>
 </div>
 
@@ -820,23 +811,13 @@ function renderReport(r) {
 async function shareReport() {
   const el = document.getElementById('report-content');
   try {
-    // Add temp watermark
-    const watermark = document.createElement('div');
-    watermark.id = 'share-watermark';
-    watermark.style.cssText = 'text-align:center;padding:14px 0 6px;font-size:11px;color:rgba(201,168,76,0.5);letter-spacing:2px;font-family:Noto Serif TC,serif;';
-    watermark.textContent = '☯ 面舌診養生顧問';
-    el.appendChild(watermark);
-
     const canvas = await html2canvas(el, {
       backgroundColor: '#1A2E2A',
-      scale: 1.5,
+      scale: 2,
       useCORS: true,
       logging: false,
     });
-
-    el.removeChild(watermark);
-
-    shareImgURL = canvas.toDataURL('image/jpeg', 0.88);
+    shareImgURL = canvas.toDataURL('image/jpeg', 0.92);
     document.getElementById('share-preview-img').src = shareImgURL;
     document.getElementById('share-overlay').classList.add('show');
   } catch (err) {
