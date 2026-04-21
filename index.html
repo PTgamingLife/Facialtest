@@ -718,7 +718,6 @@ async function handleLogin() {
     const { data, error } = await sb.from('users')
       .upsert({ name, phone }, { onConflict: 'phone', ignoreDuplicates: false })
       .select('id, name, phone, credits, total_used').single();
-    // Give 10 credits to brand new users (credits will be 0 if just created)
 
     if (error) throw error;
 
@@ -1202,16 +1201,37 @@ async function submitCode() {
   const code = document.getElementById('code-input-field').value.trim();
   const resultEl = document.getElementById('code-modal-result');
   if (code.length !== 7) { resultEl.textContent = '請輸入7位數密碼'; resultEl.className = 'modal-result err'; return; }
+
+  // Check daily limit: query today's code_usage records for this user
+  const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const { data: usageData } = await sb.from('code_usage')
+    .select('id')
+    .eq('user_id', currentUser.id)
+    .gte('used_at', todayStr + 'T00:00:00Z')
+    .lte('used_at', todayStr + 'T23:59:59Z');
+
+  if (usageData && usageData.length > 0) {
+    resultEl.textContent = '每個帳號每天限使用一次密碼';
+    resultEl.className = 'modal-result err';
+    return;
+  }
+
   const { data: codesData } = await sb.from('health_codes').select('*').eq('id', 1).single();
   if (!codesData) { resultEl.textContent = '無法讀取密碼，請稍後再試'; resultEl.className = 'modal-result err'; return; }
+
   let addAmount = 0;
   if (code === '7540336') { addAmount = 100; }
   else if (code === codesData.code_10) { addAmount = 10; }
   else if (code === codesData.code_1) { addAmount = 1; }
   else { resultEl.textContent = '密碼錯誤，請重新輸入'; resultEl.className = 'modal-result err'; return; }
+
   const newCredits = (currentUser.credits || 0) + addAmount;
-  const { error } = await sb.from('users').update({ credits: newCredits }).eq('id', currentUser.id);
-  if (error) { resultEl.textContent = '更新失敗：' + error.message; resultEl.className = 'modal-result err'; return; }
+  const { error: updateErr } = await sb.from('users').update({ credits: newCredits }).eq('id', currentUser.id);
+  if (updateErr) { resultEl.textContent = '更新失敗：' + updateErr.message; resultEl.className = 'modal-result err'; return; }
+
+  // Record usage
+  await sb.from('code_usage').insert({ user_id: currentUser.id, code_used: code, used_at: new Date().toISOString() });
+
   currentUser.credits = newCredits;
   localStorage.setItem('wellness_user', JSON.stringify(currentUser));
   resultEl.textContent = '✅ 成功增加 ' + addAmount + ' 次！剩餘 ' + newCredits + ' 次';
