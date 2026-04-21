@@ -249,6 +249,45 @@ body {
 .list-sub { font-size:18px; color: var(--jade2); margin-top: 2px; }
 
 
+/* Credits & Code */
+.credits-bar { display:flex; align-items:center; justify-content:space-between; background:rgba(15,30,26,0.5); border-radius:10px; padding:10px 14px; margin-bottom:14px; border:1px solid rgba(74,140,122,0.2); }
+.credits-info { font-size:16px; color:var(--jade2); letter-spacing:1px; }
+.credits-num { font-size:19.2px; color:var(--gold); font-weight:700; margin-left:6px; }
+.credits-zero { color:var(--red); }
+.btn-add-code { background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.35); border-radius:8px; color:var(--gold); font-family:"Noto Serif TC",serif; font-size:12px; padding:6px 12px; cursor:pointer; letter-spacing:1px; transition:all 0.3s; }
+.btn-add-code:hover { background:rgba(201,168,76,0.2); }
+
+.upload-blocked { border:1.5px dashed rgba(160,80,80,0.4) !important; background:rgba(160,80,80,0.06) !important; cursor:not-allowed !important; pointer-events:none; }
+.blocked-msg { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; width:100%; }
+.blocked-icon { font-size:30px; display:block; margin-bottom:8px; }
+.blocked-text { font-size:19.2px; color:var(--red); letter-spacing:1px; font-weight:600; }
+
+/* Code modal */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:999; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.show { display:flex; }
+.modal-box { background:var(--card); border-radius:16px; padding:24px 20px; width:100%; max-width:360px; border:1px solid rgba(201,168,76,0.3); position:relative; overflow:hidden; }
+.modal-box::before { content:''; position:absolute; top:0; left:0; right:0; height:1.5px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.modal-title { font-size:19.2px; color:var(--gold); letter-spacing:2px; font-weight:600; margin-bottom:6px; text-align:center; }
+.modal-sub { font-size:12px; color:var(--jade2); text-align:center; margin-bottom:16px; letter-spacing:1px; }
+.modal-input { width:100%; background:rgba(15,30,26,0.6); border:1px solid rgba(74,140,122,0.4); border-radius:10px; padding:13px 14px; font-family:"Noto Serif TC",serif; font-size:19.2px; color:var(--text); outline:none; letter-spacing:4px; text-align:center; margin-bottom:12px; }
+.modal-input:focus { border-color:var(--gold); }
+.modal-result { font-size:13.5px; text-align:center; margin-bottom:12px; min-height:20px; letter-spacing:1px; }
+.modal-result.ok { color:var(--jade); }
+.modal-result.err { color:var(--red); }
+
+/* Admin page */
+.admin-table { width:100%; border-collapse:collapse; margin-bottom:16px; }
+.admin-table th { font-size:10.8px; color:var(--jade2); letter-spacing:1px; padding:8px 6px; border-bottom:1px solid rgba(74,140,122,0.2); text-align:left; font-weight:500; }
+.admin-table td { font-size:12px; color:var(--text); padding:10px 6px; border-bottom:1px solid rgba(74,140,122,0.08); vertical-align:middle; }
+.admin-edit-input { background:rgba(15,30,26,0.6); border:1px solid rgba(74,140,122,0.3); border-radius:6px; padding:4px 8px; color:var(--text); font-family:"Noto Serif TC",serif; font-size:12px; width:60px; text-align:center; }
+.btn-save-credits { background:rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.3); border-radius:6px; color:var(--gold); font-family:"Noto Serif TC",serif; font-size:10.8px; padding:4px 10px; cursor:pointer; }
+.code-setting-box { background:rgba(15,30,26,0.4); border-radius:10px; padding:14px; border:1px solid rgba(74,140,122,0.15); margin-bottom:12px; }
+.code-setting-label { font-size:12px; color:var(--jade2); letter-spacing:1px; margin-bottom:8px; }
+.code-setting-row { display:flex; gap:8px; align-items:center; }
+.code-input { flex:1; background:rgba(15,30,26,0.6); border:1px solid rgba(74,140,122,0.3); border-radius:8px; padding:10px 12px; color:var(--text); font-family:"Noto Serif TC",serif; font-size:15.6px; letter-spacing:3px; text-align:center; outline:none; }
+.code-input:focus { border-color:var(--gold); }
+.btn-update-code { padding:10px 16px; background:linear-gradient(135deg,var(--gold),var(--gold2)); border:none; border-radius:8px; color:var(--deep); font-family:"Noto Serif TC",serif; font-size:12px; font-weight:600; cursor:pointer; letter-spacing:1px; white-space:nowrap; }
+
 /* Health Score */
 .score-wrap { text-align:center; padding: 20px 10px 10px; }
 .score-label { font-size:21.6px; color:var(--jade2); letter-spacing:2px; margin-bottom:10px; }
@@ -408,6 +447,11 @@ input[type="file"] { display: none; }
     <div id="step-1">
       <div class="card">
         <div class="card-title">🪞 步驟一：面部照片</div>
+        <!-- Credits bar -->
+        <div class="credits-bar">
+          <div class="credits-info">剩餘次數：<span class="credits-num" id="credits-display">-</span></div>
+          <button class="btn-add-code" onclick="openCodeModal()">＋ 添加健康密碼</button>
+        </div>
         <div class="card-desc">請上傳清晰的正面面部照片。<br>光線均勻，卸妝自然狀態最佳。</div>
         <div class="upload-zone" id="face-zone" onclick="document.getElementById('face-input').click()">
           <span class="upload-icon">📷</span>
@@ -518,6 +562,61 @@ input[type="file"] { display: none; }
 
 <!-- Share Overlay removed -->
 
+<!-- ═══════════════════════════════════════ -->
+<!-- PAGE: ADMIN -->
+<!-- ═══════════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <div class="header">
+    <div class="header-line"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px">
+      <span style="font-size:16.8px;color:var(--gold);letter-spacing:2px;">⚙️ 管理者後台</span>
+      <button onclick="logout()" style="background:none;border:none;color:rgba(122,175,156,0.5);font-family:'Noto Serif TC',serif;font-size:13.5px;cursor:pointer;">登出</button>
+    </div>
+    <div class="header-divider" style="margin-top:8px"></div>
+  </div>
+  <div class="content">
+    <!-- Code settings -->
+    <div class="sec-card">
+      <div class="sec-title">🔑 密碼設定</div>
+      <div class="code-setting-box">
+        <div class="code-setting-label">+1次 密碼（7位數）</div>
+        <div class="code-setting-row">
+          <input class="code-input" id="admin-code1-input" type="text" maxlength="7" placeholder="目前密碼">
+          <button class="btn-update-code" onclick="updateCode(1)">更新</button>
+        </div>
+        <div id="admin-code1-result" style="font-size:12px;margin-top:6px;min-height:16px;"></div>
+      </div>
+      <div class="code-setting-box">
+        <div class="code-setting-label">+10次 密碼（7位數）</div>
+        <div class="code-setting-row">
+          <input class="code-input" id="admin-code10-input" type="text" maxlength="7" placeholder="目前密碼">
+          <button class="btn-update-code" onclick="updateCode(10)">更新</button>
+        </div>
+        <div id="admin-code10-result" style="font-size:12px;margin-top:6px;min-height:16px;"></div>
+      </div>
+      <div style="font-size:10.8px;color:rgba(122,175,156,0.5);letter-spacing:0.5px;">+100次密碼 7540336 為永久固定，不可修改。</div>
+    </div>
+
+    <!-- User table -->
+    <div class="sec-card">
+      <div class="sec-title">👥 用戶管理</div>
+      <div id="admin-user-list"><div class="empty-state">載入中…</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Code Modal -->
+<div class="modal-overlay" id="code-modal">
+  <div class="modal-box">
+    <div class="modal-title">🔑 添加健康密碼</div>
+    <div class="modal-sub">輸入7位數健康密碼以增加檢測次數</div>
+    <input class="modal-input" id="code-input-field" type="tel" maxlength="7" placeholder="0000000">
+    <div class="modal-result" id="code-modal-result"></div>
+    <button class="btn-gold" onclick="submitCode()" style="margin-bottom:10px;">確認兌換</button>
+    <button class="btn-ghost" onclick="closeCodeModal()" style="margin-top:0;">取消</button>
+  </div>
+</div>
+
 <script>
 // ── Config ──────────────────────────────────────────────
 const SUPABASE_URL = 'https://wcemkmwrlvijxxwybrgs.supabase.co';
@@ -617,14 +716,20 @@ async function handleLogin() {
   try {
     // Upsert user by phone
     const { data, error } = await sb.from('users')
-      .upsert({ name, phone }, { onConflict: 'phone' })
-      .select().single();
+      .upsert({ name, phone }, { onConflict: 'phone', ignoreDuplicates: false })
+      .select('id, name, phone, credits, total_used').single();
+    // Give 10 credits to brand new users (credits will be 0 if just created)
 
     if (error) throw error;
 
-    currentUser = { id: data.id, name: data.name, phone: data.phone };
+    currentUser = { id: data.id, name: data.name, phone: data.phone, credits: data.credits || 0 };
     localStorage.setItem('wellness_user', JSON.stringify(currentUser));
-    showPage('page-main');
+    // Check if admin
+    if (data.phone === '0900000000' && data.name.toUpperCase() === 'PTGM') {
+      showPage('page-admin');
+    } else {
+      showPage('page-main');
+    }
   } catch (err) {
     showLoginError('登入失敗：' + err.message);
   } finally {
@@ -729,6 +834,16 @@ async function startAnalyze() {
   document.getElementById('step-loading').style.display = 'block';
 
   try {
+    // Check credits
+    if ((currentUser.credits || 0) <= 0) {
+      errEl.textContent = '剩餘次數不足，請添加健康密碼';
+      errEl.style.display = 'block';
+      document.getElementById('step-loading').style.display = 'none';
+      document.getElementById('step-3').style.display = 'block';
+      stopCarousel();
+      return;
+    }
+
     const res = await fetch(EDGE_FN_URL, {
       method: 'POST',
       headers: {
@@ -747,6 +862,14 @@ async function startAnalyze() {
     if (!res.ok || !json.success) throw new Error(json.error || 'API 錯誤');
 
     currentReport = json.report;
+
+    // Deduct 1 credit + increment total_used
+    const newCredits = Math.max(0, (currentUser.credits || 1) - 1);
+    const newUsed = (currentUser.total_used || 0) + 1;
+    await sb.from('users').update({ credits: newCredits, total_used: newUsed }).eq('id', currentUser.id);
+    currentUser.credits = newCredits;
+    currentUser.total_used = newUsed;
+    localStorage.setItem('wellness_user', JSON.stringify(currentUser));
 
     // Save to Supabase
     await sb.from('analysis_records').insert({
@@ -1030,12 +1153,123 @@ async function viewHistoryRecord(id) {
   showPage('page-report');
 }
 
+// ── Credits ──────────────────────────────────────────────────────────────────
+async function loadCredits() {
+  if (!currentUser) return;
+  const { data } = await sb.from('users').select('credits,total_used').eq('id', currentUser.id).single();
+  if (!data) return;
+  currentUser.credits = data.credits || 0;
+  currentUser.total_used = data.total_used || 0;
+  updateCreditsDisplay();
+  checkCreditsBlock();
+}
+
+function updateCreditsDisplay() {
+  const el = document.getElementById('credits-display');
+  if (!el) return;
+  el.textContent = currentUser.credits || 0;
+  el.className = 'credits-num' + ((currentUser.credits || 0) <= 0 ? ' credits-zero' : '');
+}
+
+function checkCreditsBlock() {
+  const zone = document.getElementById('face-zone');
+  if (!zone) return;
+  if ((currentUser.credits || 0) <= 0) {
+    zone.className = 'upload-zone upload-blocked';
+    zone.onclick = null;
+    zone.style.position = 'relative';
+    zone.innerHTML = '<div class="blocked-msg"><span class="blocked-icon">🔒</span><div class="blocked-text">請購買次數</div><div style="font-size:12px;color:rgba(192,112,112,0.7);margin-top:6px;letter-spacing:1px;">點擊「添加健康密碼」以獲取次數</div></div>';
+  } else {
+    if (!faceData && zone.classList.contains('upload-blocked')) {
+      zone.className = 'upload-zone';
+      zone.onclick = () => document.getElementById('face-input').click();
+      zone.innerHTML = '<span class="upload-icon">📷</span><div class="upload-text" style="font-size:31.2px;font-weight:600;letter-spacing:1px;color:var(--jade2);">點擊此處上傳照片或拍照</div><div class="upload-hint">支援 JPG / PNG / WebP</div>';
+    }
+  }
+}
+
+// ── Code Modal ────────────────────────────────────────────────────────────────
+function openCodeModal() {
+  document.getElementById('code-input-field').value = '';
+  document.getElementById('code-modal-result').textContent = '';
+  document.getElementById('code-modal-result').className = 'modal-result';
+  document.getElementById('code-modal').classList.add('show');
+}
+function closeCodeModal() {
+  document.getElementById('code-modal').classList.remove('show');
+}
+async function submitCode() {
+  const code = document.getElementById('code-input-field').value.trim();
+  const resultEl = document.getElementById('code-modal-result');
+  if (code.length !== 7) { resultEl.textContent = '請輸入7位數密碼'; resultEl.className = 'modal-result err'; return; }
+  const { data: codesData } = await sb.from('health_codes').select('*').eq('id', 1).single();
+  if (!codesData) { resultEl.textContent = '無法讀取密碼，請稍後再試'; resultEl.className = 'modal-result err'; return; }
+  let addAmount = 0;
+  if (code === '7540336') { addAmount = 100; }
+  else if (code === codesData.code_10) { addAmount = 10; }
+  else if (code === codesData.code_1) { addAmount = 1; }
+  else { resultEl.textContent = '密碼錯誤，請重新輸入'; resultEl.className = 'modal-result err'; return; }
+  const newCredits = (currentUser.credits || 0) + addAmount;
+  const { error } = await sb.from('users').update({ credits: newCredits }).eq('id', currentUser.id);
+  if (error) { resultEl.textContent = '更新失敗：' + error.message; resultEl.className = 'modal-result err'; return; }
+  currentUser.credits = newCredits;
+  localStorage.setItem('wellness_user', JSON.stringify(currentUser));
+  resultEl.textContent = '✅ 成功增加 ' + addAmount + ' 次！剩餘 ' + newCredits + ' 次';
+  resultEl.className = 'modal-result ok';
+  updateCreditsDisplay();
+  checkCreditsBlock();
+  setTimeout(() => closeCodeModal(), 1800);
+}
+
+// ── Admin ─────────────────────────────────────────────────────────────────────
+async function loadAdminPage() {
+  const { data: codesData } = await sb.from('health_codes').select('*').eq('id', 1).single();
+  if (codesData) {
+    document.getElementById('admin-code1-input').placeholder = codesData.code_1;
+    document.getElementById('admin-code10-input').placeholder = codesData.code_10;
+  }
+  const el = document.getElementById('admin-user-list');
+  const { data: users, error } = await sb.from('users').select('id,name,phone,credits,total_used,created_at').order('created_at', { ascending: false });
+  if (error || !users) { el.innerHTML = '<div class="empty-state">載入失敗</div>'; return; }
+  if (users.length === 0) { el.innerHTML = '<div class="empty-state">尚無用戶</div>'; return; }
+  let rows = users.map(u => '<tr><td>' + u.name + '</td><td style="font-size:10.8px;">' + u.phone + '</td><td><input class="admin-edit-input" id="cr-' + u.id + '" type="number" value="' + u.credits + '" min="0"></td><td>' + (u.total_used||0) + '</td><td><button class="btn-save-credits" onclick="saveCredits(\'' + u.id + '\')">儲存</button></td></tr>').join('');
+  el.innerHTML = '<div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>姓名</th><th>電話</th><th>剩餘次數</th><th>已用</th><th>操作</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+async function saveCredits(userId) {
+  const input = document.getElementById('cr-' + userId);
+  const newVal = parseInt(input.value);
+  if (isNaN(newVal) || newVal < 0) return;
+  const { error } = await sb.from('users').update({ credits: newVal }).eq('id', userId);
+  if (error) { alert('更新失敗：' + error.message); return; }
+  alert('已更新！');
+}
+async function updateCode(type) {
+  const inputId = type === 1 ? 'admin-code1-input' : 'admin-code10-input';
+  const resultId = type === 1 ? 'admin-code1-result' : 'admin-code10-result';
+  const newCode = document.getElementById(inputId).value.trim();
+  const resultEl = document.getElementById(resultId);
+  if (newCode.length !== 7 || !/^[0-9]{7}$/.test(newCode)) { resultEl.textContent = '請輸入7位數字'; resultEl.style.color = 'var(--red)'; return; }
+  if (newCode === '7540336') { resultEl.textContent = '不可與固定密碼相同'; resultEl.style.color = 'var(--red)'; return; }
+  const field = type === 1 ? 'code_1' : 'code_10';
+  const updateObj = {};
+  updateObj[field] = newCode;
+  updateObj['updated_at'] = new Date().toISOString();
+  const { error } = await sb.from('health_codes').update(updateObj).eq('id', 1);
+  if (error) { resultEl.textContent = '更新失敗：' + error.message; resultEl.style.color = 'var(--red)'; return; }
+  resultEl.textContent = '✅ 已更新為 ' + newCode;
+  resultEl.style.color = 'var(--jade)';
+  document.getElementById(inputId).placeholder = newCode;
+  document.getElementById(inputId).value = '';
+}
+
 // ── Page Navigation ──────────────────────────────────────
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
   window.scrollTo(0, 0);
   if (pageId === 'page-history') loadHistory();
+  if (pageId === 'page-admin') loadAdminPage();
+  if (pageId === 'page-main') { loadCredits(); }
 }
 
 function restartDiagnosis() {
@@ -1055,6 +1289,7 @@ function restartDiagnosis() {
 
   goStep(1);
   showPage('page-main');
+  loadCredits();
 }
 </script>
 </body>
