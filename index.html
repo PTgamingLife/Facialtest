@@ -1232,6 +1232,18 @@ async function submitCode() {
   // Record usage
   await sb.from('code_usage').insert({ user_id: currentUser.id, code_used: code, used_at: new Date().toISOString() });
 
+  // Rotate the used code to a new random 7-digit number (exclude 7540336)
+  if (addAmount !== 100) {
+    let newCode;
+    do {
+      newCode = String(Math.floor(1000000 + Math.random() * 9000000));
+    } while (newCode === '7540336');
+    const rotateField = addAmount === 1 ? 'code_1' : 'code_10';
+    const rotateObj = { updated_at: new Date().toISOString() };
+    rotateObj[rotateField] = newCode;
+    await sb.from('health_codes').update(rotateObj).eq('id', 1);
+  }
+
   currentUser.credits = newCredits;
   localStorage.setItem('wellness_user', JSON.stringify(currentUser));
   resultEl.textContent = '✅ 成功增加 ' + addAmount + ' 次！剩餘 ' + newCredits + ' 次';
